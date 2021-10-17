@@ -13,6 +13,11 @@ export default function Home() {
         <div className="flex flex-wrap justify-center space-y-0 space-x-4 text-center ">
           <a className="w-full sm:w-auto flex-none bg-gray-900 hover:bg-gray-700 text-white text-lg leading-6 font-semibold py-3 px-6 border border-transparent rounded-xl focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-gray-900 focus:outline-none transition-colors duration-200" href="/funds">Find Out</a>
         </div>
+        <p className="mt-10 text-xs sm:text-base text-red-500">
+          หมายเหตุ: ข้อความทั้งหมดที่ปรากฏอยู่ในเว็บไซต์นี้ ทาง <a className="underline text-blue-400" target="_blank" href="https://www.facebook.com/Grace.Programmable.Wealth">เพจ ความมั่นคั่งออกแบบได้</a>ได้จัดทำ<br/>
+          เพื่อเผยแพร่ข้อมูลให้บุคคลทั่วไปและผู้สนใจลงทุนเห็นภาพของการลงทุนแบบ DCA แต่อาจมีความคาดเคลื่อนในการคำนวนได้ที่ปรากฏในเว็บไซต์นี้ได้<br/>
+          ข้อมูลการทำรายการทั้งหมดมิได้มีการคิดค่าธรรมเนียมการซื้อ เพื่อให้ง่ายต่อความเข้าใจ
+        </p>
       </div>
     </section>
   </div>

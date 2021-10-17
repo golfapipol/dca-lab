@@ -118,7 +118,12 @@ export default function Codes({codes}) {
     const currentValue = (valueGroups) => {
         return valueGroups.reduce((total, fund) => total + fund.value, 0).toFixed(2)
     }
-    const percentChange = (networth, cost) => ((networth/cost-1)*100).toFixed(2)
+    const percentChange = (networth, cost) => {
+        if (networth == 0 && cost == 0) {
+            return (0).toFixed(2)
+        }
+        return ((networth/cost-1)*100).toFixed(2)
+    }
 
     const cost = calculateCost(funds, since, day)
     const valueFunds = currentValueGroup(funds, since, day)

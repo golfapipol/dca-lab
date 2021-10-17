@@ -245,14 +245,14 @@ export default function Codes({codes}) {
         <div className="mt-8 px-3 md:px-4">
             <div className="flex-auto flex space-x-3">
                 <button className="w-1/2 flex items-center justify-center rounded-md bg-blue-500 text-white py-4" type="button" onClick={() => {
-                    let url = encodeURI(`https://www.facebook.com/sharer/sharer.php?quote=ถ้าฉันลงทุนใน ${codes.map((f) => `${f.code}`).join(", ")} เดือนละ ${formatNumber(totalAmount)} บาท ตั้งแต่ ${dayjs.unix(since).format("YYYY/MM/DD")} มันจะมีมูลค่าเป็น ${formatNumber(networth)} บาท (${change}%) อยากรู้ว่าถ้าเราลง DCA กองทุนจะขาดทุนไหม&u=https://www.google.co.th`)
+                    let url = encodeURI(`https://www.facebook.com/sharer/sharer.php?quote=ถ้าฉันลงทุนใน ${codes.map((f) => `${f.code}`).join(", ")} เดือนละ ${formatNumber(totalAmount)} บาท ตั้งแต่ ${dayjs.unix(since).format("YYYY/MM/DD")} มันจะมีมูลค่าเป็น ${formatNumber(networth)} บาท (${change}%) อยากรู้ว่าถ้าเราลง DCA กองทุนจะขาดทุนไหม&u=${window.location.origin}`)
                     window.open(url, "_blank");
                 }}>
                     Share
                 </button>
                 
                 <button className="w-1/2 flex items-center justify-center rounded-md bg-blue-500 text-white py-4" type="button" onClick={() => {
-                    let url = encodeURI(`https://twitter.com/share?text=ถ้าฉันลงทุนใน ${codes.map((f) => `${f.code}`).join(", ")} เดือนละ ${formatNumber(totalAmount)} บาท ตั้งแต่ ${dayjs.unix(since).format("YYYY/MM/DD")} มันจะมีมูลค่าเป็น ${formatNumber(networth)} บาท (${change}%) อยากรู้ว่าถ้าเราลง DCA กองทุนจะขาดทุนไหม&url=https://www.google.co.th`)
+                    let url = encodeURI(`https://twitter.com/share?text=ถ้าฉันลงทุนใน ${codes.map((f) => `${f.code}`).join(", ")} เดือนละ ${formatNumber(totalAmount)} บาท ตั้งแต่ ${dayjs.unix(since).format("YYYY/MM/DD")} มันจะมีมูลค่าเป็น ${formatNumber(networth)} บาท (${change}%) อยากรู้ว่าถ้าเราลง DCA กองทุนจะขาดทุนไหม&url=${window.location.origin}`)
                     window.open(url, "_blank");
                 }}>
                     <svg className="w-3 h-3 fill-current text-white mr-1" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">

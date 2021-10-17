@@ -5,6 +5,7 @@ function MyApp({ Component, pageProps }) {
   return (<>
       <Head>
         <title>ความมั่งคั่งออกแบบได้ WHAT-IF DCA Fund</title>
+        <meta property="og:type" content="article" key="title" />
         <meta property="og:title" content="ความมั่งคั่งออกแบบได้ WHAT-IF DCA Fund" key="title" />
         <meta property="og:description" content="ถ้าเราลง DCA กองทุนไว้ในอดีตจะเป็นอย่างไร จะกำไร หรือ ขาดทุน?" key="description" />
         <meta property="og:image" content="https://programmable-wealth-what-if-dca-fund.netlify.app/cover-1.png" key="image" />

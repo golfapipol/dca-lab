@@ -15,6 +15,7 @@ function MyApp({ Component, pageProps }) {
         <meta property="twitter:title" content="ความมั่งคั่งออกแบบได้ WHAT-IF DCA Fund" />
         <meta property="twitter:description" content="ถ้าเราลง DCA กองทุนไว้ในอดีตจะเป็นอย่างไร จะกำไร หรือ ขาดทุน?" />
         <meta property="twitter:image" content="https://programmable-wealth-what-if-dca-fund.netlify.app/cover-1.png"/>
+        <meta property="twitter:card" content="summary_large_image"/>
       </Head>
       <script data-ad-client="ca-pub-4076028924879349" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <Component {...pageProps} />

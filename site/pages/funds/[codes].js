@@ -12,6 +12,93 @@ export async function getServerSideProps({query}) {
     }
 }
 
+const sameDay = (begin, day, histories) => (history) => {
+    const current = dayjs(history.DATE)
+    if (current.isBefore(begin)) {
+        return false
+    }
+    if (current.date() == day) {
+        return true
+    }
+    console.log("day", day)
+
+    const dcaDate = dayjs(`${current.year()}/${(current.month()+1).toString().padStart("2", "0")}/${(""+day).padStart("2", "0")}`)
+    let index = histories.indexOf(history)
+    if (index == histories.length-1) {
+        return false
+    }
+    let previous = dayjs(histories[index+1].DATE)
+    // 20 24   26 27
+    //    DCA   ^  
+    // 25 26 27
+    //     ^ DCA  
+    if (current.isAfter(dcaDate) && previous.isBefore(dcaDate)) {
+        return true
+    }
+}
+const calculateUnit = (amount, latestNAV) => (transaction) => ({
+    ...transaction,
+    amount: amount, 
+    nav: +transaction.NAV, 
+    latestNAV: latestNAV,
+    unit: +(amount / +transaction.NAV).toFixed(4)
+})
+
+const calculateCost = (funds, since, day) => {
+    const begin = dayjs.unix(since)
+    const allFunds = funds.map((fund) => {
+        const histories = require(`../../funds/${fund.code}`).default
+        return histories.filter(sameDay(begin, day, histories))
+            .map(calculateUnit(fund.amount, histories[0].NAV))
+    })
+
+    console.log("allFunds", allFunds[0])
+
+    return allFunds.reduce((total, fund) => total + fund.reduce((x,y) => x+y.amount, 0), 0).toFixed(2)
+}
+
+const calculateFundUnit = (funds, since, day) => {
+    const begin = dayjs.unix(since)
+    const allTransactions = funds.map((fund) => {
+        const histories = require(`../../funds/${fund.code}`).default
+        const transactions = histories.filter(sameDay(begin, day, histories))
+            .map(calculateUnit(fund.amount, histories[0].NAV))
+            
+        return {
+            code: fund.code,
+            latestNAV: histories[0],
+            unit: transactions.reduce((total, item) => +(total + item.unit).toFixed(4), 0),
+            transactions: transactions,
+            cost: transactions.reduce((total, item) => +(total + item.amount).toFixed(2), 0)
+        }
+    })
+
+    return allTransactions
+}
+
+const mergeTransaction = (funds, since, day) => {
+    const fundUnits = calculateFundUnit(funds, since, day)
+    return fundUnits.map((fund) => fund.transactions).flat().sort((x,y)=> dayjs(x.DATE).isAfter(y.DATE))
+}
+
+const currentValueGroup = (funds, since, day) => {
+    const fundUnits = calculateFundUnit(funds, since, day)
+    return fundUnits.map((transaction) => ({
+        ...transaction, 
+        value: +(transaction.unit * (+transaction.latestNAV.NAV)).toFixed(2)
+    }))
+}
+
+const currentValue = (valueGroups) => {
+    return valueGroups.reduce((total, fund) => total + fund.value, 0).toFixed(2)
+}
+const percentChange = (networth, cost) => {
+    if (networth == 0 && cost == 0) {
+        return (0).toFixed(2)
+    }
+    return ((networth/cost-1)*100).toFixed(2)
+}
+
 export default function Codes({codes}) {
     
     const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
@@ -33,104 +120,22 @@ export default function Codes({codes}) {
     const [funds, setFunds] = useState(codes)
     const [totalAmount, setTotalAmount] = useState(codes.reduce((total, fund) => total + fund.amount, 0))
     const formatNumber = (number) => new Intl.NumberFormat().format(number)
+    let cost
+    let valueFunds
+    let networth
+    let change
+    let fundUnits
 
     useEffect(() => {
         setTotalAmount(funds.reduce((total, fund) => total + fund.amount, 0))
-    }, [funds, day])
+        cost = calculateCost(funds, since, day)
+        valueFunds = currentValueGroup(funds, since, day)
+        networth = currentValue(valueFunds)
+        change = percentChange(networth, cost)
+        fundUnits = mergeTransaction(funds, since, day)
 
-    const sameDay = (begin, day, histories) => (history) => {
-        const current = dayjs(history.DATE)
-        if (current.isBefore(begin)) {
-            return false
-        }
-        if (current.date() == day) {
-            return true
-        }
-        console.log("day", day)
+    }, [funds, day, since])
 
-        const dcaDate = dayjs(`${current.year()}/${(current.month()+1).toString().padStart("2", "0")}/${(""+day).padStart("2", "0")}`)
-        let index = histories.indexOf(history)
-        if (index == histories.length-1) {
-            return false
-        }
-        let previous = dayjs(histories[index+1].DATE)
-        // 20 24   26 27
-        //    DCA   ^  
-        // 25 26 27
-        //     ^ DCA  
-        if (current.isAfter(dcaDate) && previous.isBefore(dcaDate)) {
-            return true
-        }
-    }
-    const calculateUnit = (amount, latestNAV) => (transaction) => ({
-        ...transaction,
-        amount: amount, 
-        nav: +transaction.NAV, 
-        latestNAV: latestNAV,
-        unit: +(amount / +transaction.NAV).toFixed(4)
-    })
-
-    const calculateCost = (funds, since, day) => {
-        const begin = dayjs.unix(since)
-        const allFunds = funds.map((fund) => {
-            const histories = require(`../../funds/${fund.code}`).default
-            return histories.filter(sameDay(begin, day, histories))
-                .map(calculateUnit(fund.amount, histories[0].NAV))
-        })
-
-        console.log("allFunds", allFunds[0])
-
-        return allFunds.reduce((total, fund) => total + fund.reduce((x,y) => x+y.amount, 0), 0).toFixed(2)
-    }
-
-    const calculateFundUnit = (funds, since, day) => {
-        const begin = dayjs.unix(since)
-        const allTransactions = funds.map((fund) => {
-            const histories = require(`../../funds/${fund.code}`).default
-            const transactions = histories.filter(sameDay(begin, day, histories))
-                .map(calculateUnit(fund.amount, histories[0].NAV))
-                
-            return {
-                code: fund.code,
-                latestNAV: histories[0],
-                unit: transactions.reduce((total, item) => +(total + item.unit).toFixed(4), 0),
-                transactions: transactions,
-                cost: transactions.reduce((total, item) => +(total + item.amount).toFixed(2), 0)
-            }
-        })
-
-        return allTransactions
-    }
-
-    const mergeTransaction = (funds, since, day) => {
-        const fundUnits = calculateFundUnit(funds, since, day)
-        return fundUnits.map((fund) => fund.transactions).flat().sort((x,y)=> dayjs(x.DATE).isAfter(y.DATE))
-    }
-
-    const currentValueGroup = (funds, since, day) => {
-        const fundUnits = calculateFundUnit(funds, since, day)
-        return fundUnits.map((transaction) => ({
-            ...transaction, 
-            value: +(transaction.unit * (+transaction.latestNAV.NAV)).toFixed(2)
-        }))
-    }
-
-    const currentValue = (valueGroups) => {
-        return valueGroups.reduce((total, fund) => total + fund.value, 0).toFixed(2)
-    }
-    const percentChange = (networth, cost) => {
-        if (networth == 0 && cost == 0) {
-            return (0).toFixed(2)
-        }
-        return ((networth/cost-1)*100).toFixed(2)
-    }
-
-    const cost = calculateCost(funds, since, day)
-    const valueFunds = currentValueGroup(funds, since, day)
-    const networth = currentValue(valueFunds)
-    const change = percentChange(networth, cost)
-    const fundUnits = mergeTransaction(funds, since, day)
-    
     console.log("fundUnits", fundUnits)
     return (<div className="mt-8 px-3 md:px-4">
         <div className="px-4 sm:px-6 md:px-8 text-center">

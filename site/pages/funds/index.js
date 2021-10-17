@@ -49,18 +49,16 @@ export default function Funds() {
                     </h2>
                     {tags.map((tag) => <p key={tag} className="text-xs sm:text-base inline m-1 p-1 rounded bg-blue-300">{categories.find((i) => i.id == tag).name}</p>)}
                     <dl className="flex flex-wrap text-sm font-medium whitespace-pre" onClick={() => {
-                        if (selected.includes(code)) {
-                            setSelected(selected.filter((select) => select != code))
-                        } else {
-                            setSelected(unique([...selected, code]))
-                        }
+                        
                     }}>
-                        <div className="absolute top-0 right-0 rounded-full bg-blue-50 text-blue-900 px-2 py-0.5 sm:flex xl:flex items-center space-x-1">
-                            <dt className={`${ selected.includes(code) ? "text-blue-500": ""}`}>
-                                <svg width="16" height="20" fill="currentColor">
-                                    <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z"></path>
-                                </svg>
-                            </dt>
+                        <div className="absolute top-0 right-0 rounded-full text-blue-900 px-2 py-0.5 sm:flex xl:flex items-center space-x-1">
+                            <input type="checkbox" value={selected.includes(code)} onChange={() => {
+                                if (selected.includes(code)) {
+                                    setSelected(selected.filter((select) => select != code))
+                                } else {
+                                    setSelected(unique([...selected, code]))
+                                }
+                            }} />
                         </div>
                     </dl>
                 </div>

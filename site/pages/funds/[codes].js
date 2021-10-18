@@ -19,7 +19,7 @@ export async function getServerSideProps({query}) {
     ]
     return {
         props: {
-            codes: query.codes.split(",").map((fund) => ({
+            codes: query.codes.toUpperCase().split(",").map((fund) => ({
                 code: fund,
                 amount: 500,
             })),

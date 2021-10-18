@@ -16,8 +16,18 @@ function MyApp({ Component, pageProps }) {
         <meta property="twitter:description" content="ถ้าเราลง DCA กองทุนไว้ในอดีตจะเป็นอย่างไร จะกำไร หรือ ขาดทุน?" />
         <meta property="twitter:image" content="https://programmable-wealth-what-if-dca-fund.netlify.app/cover-1.png"/>
         <meta property="twitter:card" content="summary_large_image"/>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YGN3J8VQVH"></script>
+        <script>{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+
+          gtag('config', 'G-YGN3J8VQVH');
+        `}</script>
+        <script data-ad-client="ca-pub-4076028924879349" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       </Head>
-      <script data-ad-client="ca-pub-4076028924879349" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <Component {...pageProps} />
     </>)
 }

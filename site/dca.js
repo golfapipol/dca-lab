@@ -65,7 +65,7 @@ export const calculateFundUnit = (funds, since, day) => {
 
 export const mergeTransaction = (funds, since, day) => {
     const fundUnits = calculateFundUnit(funds, since, day)
-    return fundUnits.map((fund) => fund.transactions).flat().sort((x,y)=> dayjs(x.DATE).isAfter(y.DATE))
+    return fundUnits.map((fund) => fund.transactions).flat().sort((x,y)=> dayjs(x.DATE).isAfter(dayjs(y.DATE)))
 }
 
 export const currentValueGroup = (funds, since, day) => {

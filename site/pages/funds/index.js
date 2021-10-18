@@ -17,6 +17,7 @@ export default function Funds() {
     const [selected, setSelected] = useState([])
     
     const unique = (array) => [...new Set(array)]
+    console.log(selected, funds)
 
     return (<div className="mt-8 px-3 md:px-4">
         <div className="px-4 sm:px-6 md:px-8 text-center">
@@ -48,11 +49,9 @@ export default function Funds() {
                         {code}
                     </h2>
                     {tags.map((tag) => <p key={tag} className="text-xs sm:text-base inline m-1 p-1 rounded bg-blue-300">{categories.find((i) => i.id == tag).name}</p>)}
-                    <dl className="flex flex-wrap text-sm font-medium whitespace-pre" onClick={() => {
-                        
-                    }}>
+                    <dl className="flex flex-wrap text-sm font-medium whitespace-pre">
                         <div className="absolute top-0 right-0 rounded-full text-blue-900 px-2 py-0.5 sm:flex xl:flex items-center space-x-1">
-                            <input type="checkbox" value={selected.includes(code)} onChange={() => {
+                            <input type="checkbox" name={`${code}-selected`} id={`${code}-selected`} value={selected.includes(code)} onChange={() => {
                                 if (selected.includes(code)) {
                                     setSelected(selected.filter((select) => select != code))
                                 } else {

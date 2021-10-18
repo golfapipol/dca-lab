@@ -26,7 +26,6 @@ function MyApp({ Component, pageProps }) {
 
           gtag('config', 'G-YGN3J8VQVH');
         `}</script>
-        <script data-ad-client="ca-pub-4076028924879349" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       </Head>
       <Component {...pageProps} />
     </>)

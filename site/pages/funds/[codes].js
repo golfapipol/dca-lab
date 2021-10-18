@@ -5,19 +5,6 @@ import {
 } from '../../dca'
 
 export async function getServerSideProps({query}) {
-    return {
-        props: {
-            codes: query.codes.split(",").map((fund) => ({
-                code: fund,
-                amount: 500,
-            })),
-        }
-    }
-}
-
-export default function Codes({codes}) {
-    
-    const days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
     const now = dayjs().startOf('d')
     const durations = [
         {value: now.add(-1, 'd').unix(), label:"เมื่อวาน"}, 
@@ -30,6 +17,19 @@ export default function Codes({codes}) {
         {value: now.add(-10, 'y').unix(), label:"10 ปีที่แล้ว"}, 
         {value: now.add(-20, 'y').unix(), label:"20 ปีที่แล้ว"}, 
     ]
+    return {
+        props: {
+            codes: query.codes.split(",").map((fund) => ({
+                code: fund,
+                amount: 500,
+            })),
+            durations,
+            days: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+        }
+    }
+}
+
+export default function Codes({codes, days, durations}) {
     const [since, setSince] = useState(durations[4].value)
     const [day, setDay] = useState(25)
     const [report, setReport] = useState("all")
@@ -75,9 +75,7 @@ export default function Codes({codes}) {
                         <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
                             <input type="number" className="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none" name="custom-input-number" 
                                 value={totalAmount}
-                                onChange={() => {
-                                    setTotalAmount(event.target.value)
-                                }} disabled={true}/>
+                                disabled={true}/>
                             
                         </div>
                     </div>
@@ -87,7 +85,7 @@ export default function Codes({codes}) {
                 </div>): null}
             </dl>
             <dl className="transition-opacity duration-1500 delay-500 flex flex-wrap ">
-                {funds.map((fund, index) => (<div key={index} className="w-full flex-none flex items-baseline px-4 sm:px-6 py-4">
+                {funds.map((fund, index) => (<div key={fund.code} className="w-full flex-none flex items-baseline px-4 sm:px-6 py-4">
                     <dt className="w-2/5 sm:w-1/3 flex-none uppercase text-xs sm:text-sm font-semibold tracking-wide">{fund.code}</dt>
                     <div className="custom-number-input h-10 w-32">
                         <div className="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
@@ -108,10 +106,12 @@ export default function Codes({codes}) {
                             <input type="number" className="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700  outline-none" name="custom-input-number" 
                                 value={fund.amount}
                                 onChange={(event) => {
-                                    console.log('onchange', event)
-                                    funds[index].amount = event.target.value
-                                    setFunds(funds)
-                                    console.log("onChange funds", funds)
+                                    if (!Number.isNaN(Number.parseInt(event.target.value, 10))) {
+                                        funds[index].amount = +event.target.value
+                                        setFunds([...funds])
+                                        console.log("onChange funds", funds)
+                                    }
+                                    
                                 }} />
                             <button data-action="increment" className="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer" onClick={() => {
                               funds[index].amount += 500
